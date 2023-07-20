@@ -21,3 +21,4 @@ app.use("/todos", todoRouter);
 app.use("/users", userRouter);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+export default app;
