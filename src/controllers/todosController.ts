@@ -47,8 +47,8 @@ const createNewTodo = async (req: Request, res: Response) => {
 };
 
 const updateTodo = async (req: Request, res: Response) => {
-  const { completed, userId, id } = req.body;
-  if (!userId || !id) {
+  const { completed, id } = req.body;
+  if (!completed || !id) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -68,7 +68,6 @@ const updateTodo = async (req: Request, res: Response) => {
   const updatedTodo = await prisma.todo.update({
     where: {
       id,
-      userId,
     },
     data: { completed },
   });
@@ -77,9 +76,9 @@ const updateTodo = async (req: Request, res: Response) => {
 };
 
 const deleteTodo = async (req: Request, res: Response) => {
-  const { id, userId } = req.body;
+  const { id } = req.body;
 
-  if (!userId || !id) {
+  if (!id) {
     return res
       .status(400)
       .json({ message: "Todo does not belong to the user" });
@@ -88,7 +87,6 @@ const deleteTodo = async (req: Request, res: Response) => {
   const todo = await prisma.todo.delete({
     where: {
       id,
-      userId,
     },
     select: {
       name: true,
