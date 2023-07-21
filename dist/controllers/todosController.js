@@ -54,15 +54,15 @@ var getAllTodos = function (req, res) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 var createNewTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name, userId, completed, duplicate, todo;
+    var _a, name, userId, duplicate, todo;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _a = req.body, name = _a.name, userId = _a.userId, completed = _a.completed;
+                _a = req.body, name = _a.name, userId = _a.userId;
                 if (!name || !userId) {
                     return [2 /*return*/, res.status(400).json({ message: "All fields are required" })];
                 }
-                if (typeof name !== "string" || typeof completed !== "boolean")
+                if (typeof name !== "string")
                     return [2 /*return*/, res.status(400).json({ message: "Invalid todo data received" })];
                 return [4 /*yield*/, prisma.todo.findUnique({
                         where: {
@@ -79,7 +79,6 @@ var createNewTodo = function (req, res) { return __awaiter(void 0, void 0, void 
                         data: {
                             name: name,
                             userId: userId,
-                            completed: completed,
                         },
                     })];
             case 2:
@@ -95,12 +94,12 @@ var createNewTodo = function (req, res) { return __awaiter(void 0, void 0, void 
     });
 }); };
 var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name, completed, userId, id, todo, updatedTodo;
+    var _a, completed, userId, id, todo, updatedTodo;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _a = req.body, name = _a.name, completed = _a.completed, userId = _a.userId, id = _a.id;
-                if (!userId || !id || !name) {
+                _a = req.body, completed = _a.completed, userId = _a.userId, id = _a.id;
+                if (!userId || !id) {
                     return [2 /*return*/, res.status(400).json({ message: "All fields are required" })];
                 }
                 return [4 /*yield*/, prisma.todo.findUnique({
@@ -113,7 +112,7 @@ var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 if (!todo) {
                     return [2 /*return*/, res.status(400).json({ message: "Todo not found" })];
                 }
-                if (todo && todo.id === id && todo.name === name) {
+                if (todo && todo.id === id) {
                     return [2 /*return*/, res.status(409).json({ message: "Duplicate Todo Name" })];
                 }
                 return [4 /*yield*/, prisma.todo.update({
@@ -121,7 +120,7 @@ var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                             id: id,
                             userId: userId,
                         },
-                        data: { completed: completed, name: name },
+                        data: { completed: completed },
                     })];
             case 2:
                 updatedTodo = _b.sent();

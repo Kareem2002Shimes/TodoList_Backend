@@ -174,7 +174,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
 }); };
 // @desc Refresh
 // @route GET /auth/refresh
-// @access Public - because access token has expired
+// @access Public -because access token has expired
 var refresh = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var cookies, refreshToken, decoded, userInfo, foundUser, accessToken, _a;
     return __generator(this, function (_b) {

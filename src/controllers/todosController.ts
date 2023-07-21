@@ -13,12 +13,12 @@ const getAllTodos = async (req: Request, res: Response) => {
 };
 
 const createNewTodo = async (req: Request, res: Response) => {
-  const { name, userId, completed } = req.body;
+  const { name, userId } = req.body;
 
   if (!name || !userId) {
     return res.status(400).json({ message: "All fields are required" });
   }
-  if (typeof name !== "string" || typeof completed !== "boolean")
+  if (typeof name !== "string")
     return res.status(400).json({ message: "Invalid todo data received" });
 
   const duplicate = await prisma.todo.findUnique({
@@ -36,7 +36,6 @@ const createNewTodo = async (req: Request, res: Response) => {
     data: {
       name,
       userId,
-      completed,
     },
   });
 
@@ -48,8 +47,8 @@ const createNewTodo = async (req: Request, res: Response) => {
 };
 
 const updateTodo = async (req: Request, res: Response) => {
-  const { name, completed, userId, id } = req.body;
-  if (!userId || !id || !name) {
+  const { completed, userId, id } = req.body;
+  if (!userId || !id) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -63,7 +62,7 @@ const updateTodo = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Todo not found" });
   }
 
-  if (todo && todo.id === id && todo.name === name) {
+  if (todo && todo.id === id) {
     return res.status(409).json({ message: "Duplicate Todo Name" });
   }
   const updatedTodo = await prisma.todo.update({
@@ -71,7 +70,7 @@ const updateTodo = async (req: Request, res: Response) => {
       id,
       userId,
     },
-    data: { completed, name },
+    data: { completed },
   });
 
   res.json(`'${updatedTodo.name}' updated`);
