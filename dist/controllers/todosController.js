@@ -39,10 +39,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var client_1 = require("@prisma/client");
 var prisma = new client_1.PrismaClient();
 var getAllTodos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var todos;
+    var userId, todos;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, prisma.todo.findMany()];
+            case 0:
+                userId = req.body.userId;
+                return [4 /*yield*/, prisma.todo.findMany({
+                        where: {
+                            userId: userId,
+                        },
+                    })];
             case 1:
                 todos = _a.sent();
                 if (!(todos === null || todos === void 0 ? void 0 : todos.length)) {

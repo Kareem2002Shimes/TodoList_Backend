@@ -4,7 +4,12 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const getAllTodos = async (req: Request, res: Response) => {
-  const todos = await prisma.todo.findMany();
+  const { userId } = req.body;
+  const todos = await prisma.todo.findMany({
+    where: {
+      userId,
+    },
+  });
 
   if (!todos?.length) {
     return res.status(400).json({ message: "No todos found" });
