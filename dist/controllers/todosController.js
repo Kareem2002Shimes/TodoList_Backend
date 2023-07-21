@@ -174,18 +174,17 @@ var deleteTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
 }); };
 var deleteAllTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userId, existedTodos;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                userId = (_a = req.query) === null || _a === void 0 ? void 0 : _a.userId;
+                userId = req.body.userId;
                 return [4 /*yield*/, prisma.todo.findMany({
                         where: {
                             userId: userId,
                         },
                     })];
             case 1:
-                existedTodos = _b.sent();
+                existedTodos = _a.sent();
                 if (!(existedTodos === null || existedTodos === void 0 ? void 0 : existedTodos.length)) {
                     return [2 /*return*/, res.status(400).json({ message: "Todo not found" })];
                 }
@@ -195,7 +194,7 @@ var deleteAllTodo = function (req, res) { return __awaiter(void 0, void 0, void 
                         },
                     })];
             case 2:
-                _b.sent();
+                _a.sent();
                 res.json({ message: "All Todo deleted successfully" });
                 return [2 /*return*/];
         }

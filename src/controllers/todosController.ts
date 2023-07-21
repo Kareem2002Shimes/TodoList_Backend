@@ -110,7 +110,7 @@ const deleteTodo = async (req: Request, res: Response) => {
   res.json({ message: `Todo '${todo.name}' deleted` });
 };
 const deleteAllTodo = async (req: Request, res: Response) => {
-  const userId: any = req.query?.userId;
+  const { userId } = req.body;
   const existedTodos = await prisma.todo.findMany({
     where: {
       userId,
