@@ -69,7 +69,7 @@ const updateTodo = async (req: Request, res: Response) => {
       id,
       userId,
     },
-    data: { completed },
+    data: { completed, updatedAt: new Date() },
   });
 
   res.json({ message: `Todo '${updatedTodo.name}' updated` });
