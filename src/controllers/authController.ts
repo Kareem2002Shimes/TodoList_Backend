@@ -137,7 +137,7 @@ const login = async (req: Request, res: Response) => {
 
 // @desc Refresh
 // @route GET /auth/refresh
-// @access Public - because access token has expired
+// @access Public -because access token has expired
 const refresh = async (req: Request, res: Response) => {
   const cookies = req.cookies;
 

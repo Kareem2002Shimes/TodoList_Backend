@@ -110,9 +110,9 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, foundUser, match, accessToken, refreshToken;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var _a, email, password, foundUser, match, accessToken, refreshToken, user, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 _a = req.body, email = _a.email, password = _a.password;
                 if (!email || !password) {
@@ -124,38 +124,51 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                         },
                     })];
             case 1:
-                foundUser = _b.sent();
+                foundUser = _c.sent();
                 if (!foundUser) {
                     return [2 /*return*/, res.status(401).json({ message: "User Not exist" })];
                 }
                 return [4 /*yield*/, bcrypt_1.default.compare(password, foundUser.password)];
             case 2:
-                match = _b.sent();
+                match = _c.sent();
                 if (!match)
                     return [2 /*return*/, res.status(401).json({ message: "Password Wrong" })];
-                try {
-                    accessToken = jsonwebtoken_1.default.sign({
-                        UserInfo: {
-                            id: foundUser.id,
+                _c.label = 3;
+            case 3:
+                _c.trys.push([3, 5, , 6]);
+                accessToken = jsonwebtoken_1.default.sign({
+                    UserInfo: {
+                        id: foundUser.id,
+                    },
+                }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+                refreshToken = jsonwebtoken_1.default.sign({ id: foundUser.id }, REFRESH_TOKEN_SECRET, {
+                    expiresIn: "7d",
+                });
+                // Create secure cookie with refresh token
+                res.cookie("jwt", refreshToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none",
+                    maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
+                });
+                return [4 /*yield*/, prisma.user.findUnique({
+                        where: {
+                            email: email,
                         },
-                    }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
-                    refreshToken = jsonwebtoken_1.default.sign({ id: foundUser.id }, REFRESH_TOKEN_SECRET, {
-                        expiresIn: "7d",
-                    });
-                    // Create secure cookie with refresh token
-                    res.cookie("jwt", refreshToken, {
-                        httpOnly: true,
-                        secure: true,
-                        sameSite: "none",
-                        maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
-                    });
-                    // Send accessToken containing email and roles
-                    res.json({ accessToken: accessToken });
-                }
-                catch (_c) {
-                    return [2 /*return*/, res.status(401).json({ message: "Unauthorized" })];
-                }
-                return [2 /*return*/];
+                        select: {
+                            id: true,
+                            email: true,
+                        },
+                    })];
+            case 4:
+                user = _c.sent();
+                // Send accessToken containing id
+                res.json({ accessToken: accessToken, user: { id: user === null || user === void 0 ? void 0 : user.id, email: user === null || user === void 0 ? void 0 : user.email } });
+                return [3 /*break*/, 6];
+            case 5:
+                _b = _c.sent();
+                return [2 /*return*/, res.status(401).json({ message: "Unauthorized" })];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
