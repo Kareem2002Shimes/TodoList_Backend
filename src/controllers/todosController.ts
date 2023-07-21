@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
 const getAllTodos = async (req: Request, res: Response) => {
   const todos = await prisma.todo.findMany();
 
@@ -47,8 +48,8 @@ const createNewTodo = async (req: Request, res: Response) => {
 };
 
 const updateTodo = async (req: Request, res: Response) => {
-  const { completed, id } = req.body;
-  if (!completed || !id) {
+  const { id, completed } = req.body;
+  if (!id || !completed) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -69,7 +70,7 @@ const updateTodo = async (req: Request, res: Response) => {
     data: { completed },
   });
 
-  res.json(`'${updatedTodo.name}' updated`);
+  res.json({ message: `Todo '${updatedTodo.name}' updated` });
 };
 
 const deleteTodo = async (req: Request, res: Response) => {
@@ -87,7 +88,6 @@ const deleteTodo = async (req: Request, res: Response) => {
     },
     select: {
       name: true,
-      id: true,
     },
   });
 
@@ -95,9 +95,28 @@ const deleteTodo = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Todo not found" });
   }
 
-  const reply = `Todo deleted successfully`;
+  res.json({ message: `Todo '${todo.name}' deleted` });
+};
+const deleteAllTodo = async (req: Request, res: Response) => {
+  const { id } = req.body;
+  const data = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      todos: true,
+    },
+  });
 
-  res.json(reply);
+  if (!data?.todos) {
+    return res.status(400).json({ message: "No todos found" });
+  }
+  await prisma.todo.deleteMany({
+    where: {
+      userId: id,
+    },
+  });
+  res.json({ message: "All Todo deleted successfully" });
 };
 
 export default {
@@ -105,4 +124,5 @@ export default {
   createNewTodo,
   updateTodo,
   deleteTodo,
+  deleteAllTodo,
 };

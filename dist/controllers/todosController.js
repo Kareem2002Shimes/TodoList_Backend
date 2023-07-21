@@ -94,12 +94,12 @@ var createNewTodo = function (req, res) { return __awaiter(void 0, void 0, void 
     });
 }); };
 var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, completed, id, todo, updatedTodo;
+    var _a, id, completed, todo, updatedTodo;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _a = req.body, completed = _a.completed, id = _a.id;
-                if (!completed || !id) {
+                _a = req.body, id = _a.id, completed = _a.completed;
+                if (!id || !completed) {
                     return [2 /*return*/, res.status(400).json({ message: "All fields are required" })];
                 }
                 return [4 /*yield*/, prisma.todo.findUnique({
@@ -120,13 +120,13 @@ var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                     })];
             case 2:
                 updatedTodo = _b.sent();
-                res.json("'".concat(updatedTodo.name, "' updated"));
+                res.json({ message: "Todo '".concat(updatedTodo.name, "' updated") });
                 return [2 /*return*/];
         }
     });
 }); };
 var deleteTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, todo, reply;
+    var id, todo;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -142,7 +142,6 @@ var deleteTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                         },
                         select: {
                             name: true,
-                            id: true,
                         },
                     })];
             case 1:
@@ -150,8 +149,38 @@ var deleteTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 if (!todo) {
                     return [2 /*return*/, res.status(400).json({ message: "Todo not found" })];
                 }
-                reply = "Todo deleted successfully";
-                res.json(reply);
+                res.json({ message: "Todo '".concat(todo.name, "' deleted") });
+                return [2 /*return*/];
+        }
+    });
+}); };
+var deleteAllTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.body.id;
+                return [4 /*yield*/, prisma.user.findUnique({
+                        where: {
+                            id: id,
+                        },
+                        select: {
+                            todos: true,
+                        },
+                    })];
+            case 1:
+                data = _a.sent();
+                if (!(data === null || data === void 0 ? void 0 : data.todos)) {
+                    return [2 /*return*/, res.status(400).json({ message: "No todos found" })];
+                }
+                return [4 /*yield*/, prisma.todo.deleteMany({
+                        where: {
+                            userId: id,
+                        },
+                    })];
+            case 2:
+                _a.sent();
+                res.json({ message: "All Todo deleted successfully" });
                 return [2 /*return*/];
         }
     });
@@ -161,4 +190,5 @@ exports.default = {
     createNewTodo: createNewTodo,
     updateTodo: updateTodo,
     deleteTodo: deleteTodo,
+    deleteAllTodo: deleteAllTodo,
 };
