@@ -30,7 +30,7 @@ const createNewTodo = async (req: Request, res: Response) => {
   });
 
   if (duplicate) {
-    return res.status(409).json({ message: "Duplicate Todo" });
+    return res.status(409).json({ message: "Todo already exist" });
   }
 
   const todo = await prisma.todo.create({
@@ -48,14 +48,15 @@ const createNewTodo = async (req: Request, res: Response) => {
 };
 
 const updateTodo = async (req: Request, res: Response) => {
-  const { id, completed } = req.body;
-  if (!id || !completed) {
+  const { id, completed, userId } = req.body;
+  if (!id || !completed || !userId) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   const todo = await prisma.todo.findUnique({
     where: {
       id,
+      userId,
     },
   });
 
@@ -66,6 +67,7 @@ const updateTodo = async (req: Request, res: Response) => {
   const updatedTodo = await prisma.todo.update({
     where: {
       id,
+      userId,
     },
     data: { completed },
   });
@@ -74,48 +76,46 @@ const updateTodo = async (req: Request, res: Response) => {
 };
 
 const deleteTodo = async (req: Request, res: Response) => {
-  const { id } = req.body;
-
-  if (!id) {
-    return res
-      .status(400)
-      .json({ message: "Todo does not belong to the user" });
+  const { id, userId } = req.body;
+  const existedTodo = await prisma.todo.findUnique({
+    where: {
+      id,
+      userId,
+    },
+  });
+  if (!existedTodo) {
+    return res.status(400).json({ message: "Todo not found" });
   }
 
   const todo = await prisma.todo.delete({
     where: {
       id,
+      userId,
     },
     select: {
       name: true,
     },
   });
 
-  if (!todo) {
-    return res.status(400).json({ message: "Todo not found" });
-  }
-
   res.json({ message: `Todo '${todo.name}' deleted` });
 };
 const deleteAllTodo = async (req: Request, res: Response) => {
-  const { id } = req.body;
-  const data = await prisma.user.findUnique({
+  const { userId } = req.body;
+  const existedTodos = await prisma.todo.findMany({
     where: {
-      id,
+      userId,
     },
-    select: {
-      todos: true,
+  });
+  if (!existedTodos) {
+    return res.status(400).json({ message: "Todo not found" });
+  }
+
+  await prisma.todo.deleteMany({
+    where: {
+      userId,
     },
   });
 
-  if (!data?.todos) {
-    return res.status(400).json({ message: "No todos found" });
-  }
-  await prisma.todo.deleteMany({
-    where: {
-      userId: id,
-    },
-  });
   res.json({ message: "All Todo deleted successfully" });
 };
 

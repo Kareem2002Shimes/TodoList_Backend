@@ -70,11 +70,6 @@ const register = async (req: Request, res: Response) => {
   res.json({
     message: "User registered successfully",
     accessToken,
-    user: {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-    },
   });
 };
 const login = async (req: Request, res: Response) => {
@@ -119,17 +114,12 @@ const login = async (req: Request, res: Response) => {
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
     });
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-      select: {
-        id: true,
-        email: true,
-      },
-    });
+
     // Send accessToken containing id
-    res.json({ accessToken, user: { id: user?.id, email: user?.email } });
+    res.json({
+      message: "User Logged in successfully",
+      accessToken,
+    });
   } catch {
     return res.status(401).json({ message: "Unauthorized" });
   }

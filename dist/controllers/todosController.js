@@ -73,7 +73,7 @@ var createNewTodo = function (req, res) { return __awaiter(void 0, void 0, void 
             case 1:
                 duplicate = _b.sent();
                 if (duplicate) {
-                    return [2 /*return*/, res.status(409).json({ message: "Duplicate Todo" })];
+                    return [2 /*return*/, res.status(409).json({ message: "Todo already exist" })];
                 }
                 return [4 /*yield*/, prisma.todo.create({
                         data: {
@@ -94,17 +94,18 @@ var createNewTodo = function (req, res) { return __awaiter(void 0, void 0, void 
     });
 }); };
 var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, id, completed, todo, updatedTodo;
+    var _a, id, completed, userId, todo, updatedTodo;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _a = req.body, id = _a.id, completed = _a.completed;
-                if (!id || !completed) {
+                _a = req.body, id = _a.id, completed = _a.completed, userId = _a.userId;
+                if (!id || !completed || !userId) {
                     return [2 /*return*/, res.status(400).json({ message: "All fields are required" })];
                 }
                 return [4 /*yield*/, prisma.todo.findUnique({
                         where: {
                             id: id,
+                            userId: userId,
                         },
                     })];
             case 1:
@@ -115,6 +116,7 @@ var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, prisma.todo.update({
                         where: {
                             id: id,
+                            userId: userId,
                         },
                         data: { completed: completed },
                     })];
@@ -126,56 +128,57 @@ var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 var deleteTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, todo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a, id, userId, existedTodo, todo;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                id = req.body.id;
-                if (!id) {
-                    return [2 /*return*/, res
-                            .status(400)
-                            .json({ message: "Todo does not belong to the user" })];
+                _a = req.body, id = _a.id, userId = _a.userId;
+                return [4 /*yield*/, prisma.todo.findUnique({
+                        where: {
+                            id: id,
+                            userId: userId,
+                        },
+                    })];
+            case 1:
+                existedTodo = _b.sent();
+                if (!existedTodo) {
+                    return [2 /*return*/, res.status(400).json({ message: "Todo not found" })];
                 }
                 return [4 /*yield*/, prisma.todo.delete({
                         where: {
                             id: id,
+                            userId: userId,
                         },
                         select: {
                             name: true,
                         },
                     })];
-            case 1:
-                todo = _a.sent();
-                if (!todo) {
-                    return [2 /*return*/, res.status(400).json({ message: "Todo not found" })];
-                }
+            case 2:
+                todo = _b.sent();
                 res.json({ message: "Todo '".concat(todo.name, "' deleted") });
                 return [2 /*return*/];
         }
     });
 }); };
 var deleteAllTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, data;
+    var userId, existedTodos;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                id = req.body.id;
-                return [4 /*yield*/, prisma.user.findUnique({
+                userId = req.body.userId;
+                return [4 /*yield*/, prisma.todo.findMany({
                         where: {
-                            id: id,
-                        },
-                        select: {
-                            todos: true,
+                            userId: userId,
                         },
                     })];
             case 1:
-                data = _a.sent();
-                if (!(data === null || data === void 0 ? void 0 : data.todos)) {
-                    return [2 /*return*/, res.status(400).json({ message: "No todos found" })];
+                existedTodos = _a.sent();
+                if (!existedTodos) {
+                    return [2 /*return*/, res.status(400).json({ message: "Todo not found" })];
                 }
                 return [4 /*yield*/, prisma.todo.deleteMany({
                         where: {
-                            userId: id,
+                            userId: userId,
                         },
                     })];
             case 2:
