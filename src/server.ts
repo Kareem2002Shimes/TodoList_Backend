@@ -3,14 +3,14 @@ dotenv.config();
 import express from "express";
 const app = express();
 
-import cors from "cors";
-import { corsOptions } from "./config/corsOptions";
+// import cors from "cors";
+// import { corsOptions } from "./config/corsOptions";
 import authRouter from "./routes/authRoutes";
 import todoRouter from "./routes/todoRoutes";
 import userRouter from "./routes/userRoutes";
 const PORT = process.env.PORT || 5000;
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 app.use(express.json());
 
 // app.use("/", express.static(path.join(__dirname, "public")));
