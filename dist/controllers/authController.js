@@ -65,7 +65,9 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                     return [2 /*return*/, res.status(401).json({ message: "User Already exist" })];
                 }
                 if (password.length < 8) {
-                    return [2 /*return*/, res.status(400).json({ message: "Password must be greater than 8" })];
+                    return [2 /*return*/, res
+                            .status(400)
+                            .json({ message: "Password must be at least 8 character" })];
                 }
                 return [4 /*yield*/, bcrypt_1.default.hash(password, 10)];
             case 2:
