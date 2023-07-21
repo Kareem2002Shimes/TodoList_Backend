@@ -4,7 +4,12 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const getAllTodos = async (req: Request, res: Response) => {
-  const { userId } = req.body;
+  const userId: any = req.query?.userId;
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ message: "Please provide userId to get user Todos" });
+  }
   const todos = await prisma.todo.findMany({
     where: {
       userId,
@@ -105,7 +110,7 @@ const deleteTodo = async (req: Request, res: Response) => {
   res.json({ message: `Todo '${todo.name}' deleted` });
 };
 const deleteAllTodo = async (req: Request, res: Response) => {
-  const { userId } = req.body;
+  const userId: any = req.query?.userId;
   const existedTodos = await prisma.todo.findMany({
     where: {
       userId,

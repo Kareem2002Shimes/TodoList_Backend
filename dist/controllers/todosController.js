@@ -40,17 +40,23 @@ var client_1 = require("@prisma/client");
 var prisma = new client_1.PrismaClient();
 var getAllTodos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userId, todos;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                userId = req.body.userId;
+                userId = (_a = req.query) === null || _a === void 0 ? void 0 : _a.userId;
+                if (!userId) {
+                    return [2 /*return*/, res
+                            .status(400)
+                            .json({ message: "Please provide userId to get user Todos" })];
+                }
                 return [4 /*yield*/, prisma.todo.findMany({
                         where: {
                             userId: userId,
                         },
                     })];
             case 1:
-                todos = _a.sent();
+                todos = _b.sent();
                 if (!(todos === null || todos === void 0 ? void 0 : todos.length)) {
                     return [2 /*return*/, res.status(400).json({ message: "No todos found" })];
                 }
@@ -168,17 +174,18 @@ var deleteTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
 }); };
 var deleteAllTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userId, existedTodos;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                userId = req.body.userId;
+                userId = (_a = req.query) === null || _a === void 0 ? void 0 : _a.userId;
                 return [4 /*yield*/, prisma.todo.findMany({
                         where: {
                             userId: userId,
                         },
                     })];
             case 1:
-                existedTodos = _a.sent();
+                existedTodos = _b.sent();
                 if (!(existedTodos === null || existedTodos === void 0 ? void 0 : existedTodos.length)) {
                     return [2 /*return*/, res.status(400).json({ message: "Todo not found" })];
                 }
@@ -188,7 +195,7 @@ var deleteAllTodo = function (req, res) { return __awaiter(void 0, void 0, void 
                         },
                     })];
             case 2:
-                _a.sent();
+                _b.sent();
                 res.json({ message: "All Todo deleted successfully" });
                 return [2 /*return*/];
         }
