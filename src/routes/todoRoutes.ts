@@ -5,7 +5,7 @@ import verifyJWT from "../middleware/verifyJWT";
 router.use(verifyJWT);
 router
   .route("/")
-  .get(todosController.getAllTodos)
+  .post(todosController.getAllTodos)
   .post(todosController.createNewTodo)
   .patch(todosController.updateTodo)
   .delete(todosController.deleteTodo);

@@ -10,7 +10,7 @@ var verifyJWT_1 = __importDefault(require("../middleware/verifyJWT"));
 router.use(verifyJWT_1.default);
 router
     .route("/")
-    .get(todosController_1.default.getAllTodos)
+    .post(todosController_1.default.getAllTodos)
     .post(todosController_1.default.createNewTodo)
     .patch(todosController_1.default.updateTodo)
     .delete(todosController_1.default.deleteTodo);
