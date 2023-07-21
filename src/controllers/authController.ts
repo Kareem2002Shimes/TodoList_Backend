@@ -128,7 +128,7 @@ const login = async (req: Request, res: Response) => {
         email: true,
       },
     });
-    // Send accessToken containing email and roles
+    // Send accessToken containing id
     res.json({ accessToken, user: { id: user?.id, email: user?.email } });
   } catch {
     return res.status(401).json({ message: "Unauthorized" });
