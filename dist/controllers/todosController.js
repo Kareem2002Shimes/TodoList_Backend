@@ -118,7 +118,7 @@ var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                             id: id,
                             userId: userId,
                         },
-                        data: { completed: completed },
+                        data: { completed: completed, updatedAt: new Date() },
                     })];
             case 2:
                 updatedTodo = _b.sent();
@@ -173,7 +173,7 @@ var deleteAllTodo = function (req, res) { return __awaiter(void 0, void 0, void 
                     })];
             case 1:
                 existedTodos = _a.sent();
-                if (!existedTodos) {
+                if (!(existedTodos === null || existedTodos === void 0 ? void 0 : existedTodos.length)) {
                     return [2 /*return*/, res.status(400).json({ message: "Todo not found" })];
                 }
                 return [4 /*yield*/, prisma.todo.deleteMany({
