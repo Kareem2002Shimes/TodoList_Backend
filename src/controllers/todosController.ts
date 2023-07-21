@@ -106,7 +106,7 @@ const deleteAllTodo = async (req: Request, res: Response) => {
       userId,
     },
   });
-  if (!existedTodos) {
+  if (!existedTodos?.length) {
     return res.status(400).json({ message: "Todo not found" });
   }
 
