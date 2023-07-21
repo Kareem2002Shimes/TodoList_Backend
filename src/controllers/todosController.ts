@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const getAllTodos = async (req: Request, res: Response) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
   const todos = await prisma.todo.findMany({
     where: {
       userId,
