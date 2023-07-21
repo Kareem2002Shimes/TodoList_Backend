@@ -112,9 +112,6 @@ var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 if (!todo) {
                     return [2 /*return*/, res.status(400).json({ message: "Todo not found" })];
                 }
-                if (todo && todo.id === id) {
-                    return [2 /*return*/, res.status(409).json({ message: "Duplicate Todo Name" })];
-                }
                 return [4 /*yield*/, prisma.todo.update({
                         where: {
                             id: id,

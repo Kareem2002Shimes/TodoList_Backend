@@ -62,9 +62,6 @@ const updateTodo = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Todo not found" });
   }
 
-  if (todo && todo.id === id) {
-    return res.status(409).json({ message: "Duplicate Todo Name" });
-  }
   const updatedTodo = await prisma.todo.update({
     where: {
       id,
