@@ -119,9 +119,17 @@ const login = async (req: Request, res: Response) => {
       sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
     });
-
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+        email: true,
+      },
+    });
     // Send accessToken containing email and roles
-    res.json({ accessToken });
+    res.json({ accessToken, user: { id: user?.id, email: user?.email } });
   } catch {
     return res.status(401).json({ message: "Unauthorized" });
   }
