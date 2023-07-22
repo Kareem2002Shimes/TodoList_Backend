@@ -53,7 +53,7 @@ const register = async (req: Request, res: Response) => {
       },
     },
     ACCESS_TOKEN_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "5" }
   );
 
   const refreshToken = jwt.sign({ id: user.id }, REFRESH_TOKEN_SECRET, {
@@ -103,7 +103,7 @@ const login = async (req: Request, res: Response) => {
         },
       },
       ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "5" }
     );
 
     const refreshToken = jwt.sign({ id: foundUser.id }, REFRESH_TOKEN_SECRET, {
@@ -156,7 +156,7 @@ const refresh = async (req: Request, res: Response) => {
         },
       },
       ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "5" }
     );
 
     res.json({ accessToken });

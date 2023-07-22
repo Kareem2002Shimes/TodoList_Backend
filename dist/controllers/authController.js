@@ -86,7 +86,7 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                     UserInfo: {
                         id: user.id,
                     },
-                }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+                }, ACCESS_TOKEN_SECRET, { expiresIn: "5" });
                 refreshToken = jsonwebtoken_1.default.sign({ id: user.id }, REFRESH_TOKEN_SECRET, {
                     expiresIn: "7d",
                 });
@@ -135,7 +135,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                         UserInfo: {
                             id: foundUser.id,
                         },
-                    }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+                    }, ACCESS_TOKEN_SECRET, { expiresIn: "5" });
                     refreshToken = jsonwebtoken_1.default.sign({ id: foundUser.id }, REFRESH_TOKEN_SECRET, {
                         expiresIn: "7d",
                     });
@@ -189,7 +189,7 @@ var refresh = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                     UserInfo: {
                         id: foundUser.id,
                     },
-                }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+                }, ACCESS_TOKEN_SECRET, { expiresIn: "5" });
                 res.json({ accessToken: accessToken });
                 return [3 /*break*/, 4];
             case 3:
