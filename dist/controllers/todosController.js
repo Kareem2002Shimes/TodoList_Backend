@@ -106,18 +106,19 @@ var createNewTodo = function (req, res) { return __awaiter(void 0, void 0, void 
     });
 }); };
 var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, id, completed, userId, todo, updatedTodo;
+    var _a, id, completed, todo, updatedTodo;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _a = req.body, id = _a.id, completed = _a.completed, userId = _a.userId;
-                if (!id || !completed || !userId) {
-                    return [2 /*return*/, res.status(400).json({ message: "All fields are required" })];
+                _a = req.body, id = _a.id, completed = _a.completed;
+                if (!id) {
+                    return [2 /*return*/, res
+                            .status(400)
+                            .json({ message: "Please provide userId to update Todo" })];
                 }
                 return [4 /*yield*/, prisma.todo.findUnique({
                         where: {
                             id: id,
-                            userId: userId,
                         },
                     })];
             case 1:
@@ -128,7 +129,6 @@ var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, prisma.todo.update({
                         where: {
                             id: id,
-                            userId: userId,
                         },
                         data: { completed: completed, updatedAt: new Date() },
                     })];
@@ -140,15 +140,15 @@ var updateTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 var deleteTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, id, userId, existedTodo, todo;
+    var id, existedTodo, todo;
+    var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _a = req.body, id = _a.id, userId = _a.userId;
+                id = (_a = req.params) === null || _a === void 0 ? void 0 : _a.id;
                 return [4 /*yield*/, prisma.todo.findUnique({
                         where: {
                             id: id,
-                            userId: userId,
                         },
                     })];
             case 1:
@@ -159,7 +159,6 @@ var deleteTodo = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, prisma.todo.delete({
                         where: {
                             id: id,
-                            userId: userId,
                         },
                         select: {
                             name: true,

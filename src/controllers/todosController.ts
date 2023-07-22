@@ -58,15 +58,16 @@ const createNewTodo = async (req: Request, res: Response) => {
 };
 
 const updateTodo = async (req: Request, res: Response) => {
-  const { id, completed, userId } = req.body;
-  if (!id || !completed || !userId) {
-    return res.status(400).json({ message: "All fields are required" });
+  const { id, completed } = req.body;
+  if (!id) {
+    return res
+      .status(400)
+      .json({ message: "Please provide userId to update Todo" });
   }
 
   const todo = await prisma.todo.findUnique({
     where: {
       id,
-      userId,
     },
   });
 
@@ -77,7 +78,6 @@ const updateTodo = async (req: Request, res: Response) => {
   const updatedTodo = await prisma.todo.update({
     where: {
       id,
-      userId,
     },
     data: { completed, updatedAt: new Date() },
   });
@@ -86,11 +86,10 @@ const updateTodo = async (req: Request, res: Response) => {
 };
 
 const deleteTodo = async (req: Request, res: Response) => {
-  const { id, userId } = req.body;
+  const id: any = req.params?.id;
   const existedTodo = await prisma.todo.findUnique({
     where: {
       id,
-      userId,
     },
   });
   if (!existedTodo) {
@@ -100,7 +99,6 @@ const deleteTodo = async (req: Request, res: Response) => {
   const todo = await prisma.todo.delete({
     where: {
       id,
-      userId,
     },
     select: {
       name: true,

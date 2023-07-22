@@ -8,6 +8,7 @@ router
   .get(todosController.getAllTodos)
   .post(todosController.createNewTodo)
   .patch(todosController.updateTodo)
-  .delete(todosController.deleteTodo);
+  .delete(todosController.deleteAllTodo);
 
+router.delete("/:id", todosController.deleteTodo);
 export default router;

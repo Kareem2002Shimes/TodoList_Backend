@@ -13,5 +13,6 @@ router
     .get(todosController_1.default.getAllTodos)
     .post(todosController_1.default.createNewTodo)
     .patch(todosController_1.default.updateTodo)
-    .delete(todosController_1.default.deleteTodo);
+    .delete(todosController_1.default.deleteAllTodo);
+router.delete("/:id", todosController_1.default.deleteTodo);
 exports.default = router;
